@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radical Operations Workout — Math 2201</title>
+<style>
+  :root{
+    --ink:#1c2430; --muted:#5a6572; --accent:#0b5cad; --accent-dark:#084a8a;
+    --ok:#177245; --bad:#b3261e; --card:#ffffff; --bg:#eef2f6; --line:#d4dce4;
+    --soft:#f4f8fc;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.45;}
+  .wrap{max-width:720px;margin:0 auto;padding:16px 14px 48px;}
+  header{margin:10px 0 14px;}
+  h1{font-size:1.7rem;margin:0 0 2px;}
+  .subtitle{color:var(--muted);font-size:1rem;margin:0 0 8px;}
+  .instruction{font-size:1.02rem;margin:0;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:16px;margin:14px 0;box-shadow:0 1px 3px rgba(20,40,60,.06);}
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+  .controls label{font-weight:600;}
+  select,button{font:inherit;}
+  select{padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;min-height:44px;}
+  button{cursor:pointer;border:1px solid var(--accent);background:var(--accent);color:#fff;
+    padding:9px 16px;border-radius:8px;min-height:44px;font-weight:600;}
+  button:hover{background:var(--accent-dark);}
+  button.secondary{background:#fff;color:var(--accent);}
+  button.secondary:hover{background:var(--soft);}
+  button:disabled{opacity:.55;cursor:default;}
+  button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #f2b01e;outline-offset:2px;}
+  .score{margin-left:auto;color:var(--muted);font-size:.95rem;}
+  .score strong{color:var(--ink);}
+  .equation{font-size:1.45rem;text-align:center;padding:10px 6px 4px;overflow-x:auto;}
+  .eq-label{text-align:center;color:var(--muted);font-size:.92rem;margin:0;}
+  .kindtag{display:inline-block;background:var(--soft);border:1px solid var(--line);
+    border-radius:999px;padding:2px 10px;font-size:.85rem;color:var(--accent-dark);font-weight:600;}
+  .step{border:1px solid var(--line);border-radius:10px;padding:14px;margin:12px 0;background:#fff;}
+  .step.done{border-color:var(--ok);background:#f2faf5;}
+  .step h3{margin:0 0 6px;font-size:1.05rem;}
+  .step .prompt{margin:0 0 10px;}
+  .fields{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;}
+  .field{display:flex;flex-direction:column;gap:3px;}
+  .field label{font-size:.85rem;color:var(--muted);font-weight:600;}
+  .field input{width:86px;padding:9px 10px;font:inherit;font-size:1.05rem;border:1px solid var(--line);
+    border-radius:8px;min-height:44px;}
+  .field input:disabled{background:var(--soft);color:var(--muted);}
+  .stepbtns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  .feedback{margin:10px 0 0;min-height:1.3em;font-weight:600;}
+  .feedback.ok{color:var(--ok);}
+  .feedback.bad{color:var(--bad);}
+  .rad{display:inline-block;border-top:2px solid currentColor;padding:0 2px;margin-left:1px;}
+  .frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 5px;}
+  .frac .num{border-bottom:2px solid currentColor;padding:0 8px 2px;}
+  .frac .den{padding:2px 8px 0;}
+  .solution{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:14px;}
+  .solution h3{margin:0 0 8px;}
+  .solution .line{font-size:1.08rem;padding:3px 0;border-bottom:1px dashed var(--line);}
+  .solution .line:last-child{border-bottom:none;}
+  .worked-example{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:12px 0;background:var(--soft);}
+  .worked-example h3{margin:0 0 6px;}
+  .worked-example .line{font-size:1.08rem;padding:3px 0;border-bottom:1px dashed var(--line);}
+  .worked-example .line:last-child{border-bottom:none;}
+  .worked-example .stmt{font-size:1.3rem;text-align:center;padding:6px 0 8px;}
+  .hidden{display:none !important;}
+  @media (max-width:480px){
+    h1{font-size:1.4rem;}
+    .equation{font-size:1.2rem;}
+    .field input{width:74px;}
+    .score{margin-left:0;width:100%;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Radical Operations Workout</h1>
+    <p class="subtitle">Math 2201 · Unit 4 — Radicals (Indicators 1.6, 1.7)</p>
+    <p class="instruction">Work each problem one checked step at a time, in exact form. Every mode starts with a worked example, then a faded one with the last step left for you.</p>
+  </header>
+
+  <div class="card controls" role="group" aria-label="Problem controls">
+    <label for="modeSelect">Mode</label>
+    <select id="modeSelect">
+      <option value="mixed" selected>Mixed set (all modes)</option>
+      <option value="addsubnum">Add / Subtract — numbers</option>
+      <option value="addsubvar">Add / Subtract — variables</option>
+      <option value="multiply">Multiply (including distribution)</option>
+      <option value="divide">Divide</option>
+      <option value="rationalize">Rationalize the denominator</option>
+    </select>
+    <button type="button" id="newSetBtn">New set</button>
+    <span class="score" id="scoreLine" aria-live="polite"></span>
+  </div>
+
+  <div class="card hidden" id="workedCard">
+    <h2 id="workedTitle" style="margin:0 0 4px;font-size:1.2rem;">Worked example</h2>
+    <p class="eq-label" id="workedNote" style="text-align:left;"></p>
+    <div id="workedBody"></div>
+    <div class="stepbtns">
+      <button type="button" id="workedContinueBtn">Got it — try the faded one</button>
+    </div>
+  </div>
+
+  <main class="card" id="problemCard">
+    <p class="eq-label"><span class="kindtag" id="kindTag"></span></p>
+    <div class="equation" id="equationDisplay"></div>
+    <p class="eq-label" id="equationHint"></p>
+    <div id="stepsContainer"></div>
+    <div class="stepbtns">
+      <button type="button" class="secondary" id="showSolutionBtn">Show worked solution</button>
+      <button type="button" class="secondary hidden" id="reviewBtn">Review the worked example</button>
+      <button type="button" class="hidden" id="nextBtn">Next problem</button>
+    </div>
+    <div class="solution hidden" id="solutionPanel" aria-live="polite">
+      <h3>Worked solution</h3>
+      <div id="solutionLines"></div>
+    </div>
+  </main>
+
+  <div class="card hidden" id="doneCard">
+    <h2 style="margin:0 0 6px;font-size:1.25rem;">Session complete</h2>
+    <p id="doneText" style="margin:0 0 12px;"></p>
+    <button type="button" id="againBtn">Start a new set</button>
+  </div>
+</div>
+
+<script>
+"use strict";
+// ==GENERATOR==
+// Pure generator / answer-key logic for the Radical Operations Workout.
+// No DOM access in this section. Every problem object exposes:
+//   shape, mode, params (raw construction parameters), idString,
+//   key (canonical final answer), steps (checked step decompositions),
+//   solutionLines (plain-text worked solution).
+
+function gcd(a, b) {
+  a = Math.abs(a); b = Math.abs(b);
+  while (b !== 0) { var t = a % b; a = b; b = t; }
+  return a;
+}
+function gcd3(a, b, c) { return gcd(gcd(a, b), c); }
+
+function isSquarefree(n) {
+  n = Math.abs(n);
+  if (n === 0) return false;
+  for (var i = 2; i * i <= n; i++) {
+    if (n % (i * i) === 0) return false;
+  }
+  return true;
+}
+
+// For n > 0: returns {coeff, radicand} with n = coeff^2 * radicand, radicand squarefree.
+function extractSquare(n) {
+  var coeff = 1, radicand = n;
+  for (var i = 2; i * i <= radicand; i++) {
+    while (radicand % (i * i) === 0) { radicand = radicand / (i * i); coeff = coeff * i; }
+  }
+  return { coeff: coeff, radicand: radicand };
+}
+
+// Canonical form of the value coeff * sqrt(radicand): squarefree radicand.
+function simplifyValue(coeff, radicand) {
+  if (coeff === 0) return { coeff: 0, radicand: 1 };
+  var e = extractSquare(radicand);
+  return { coeff: coeff * e.coeff, radicand: e.radicand };
+}
+
+// Canonical form of coeff * sqrt(radNum * x^xExp), variables >= 0:
+// {coeff, varOut, radNum, radVar} meaning coeff * x^varOut * sqrt(radNum * x^radVar),
+// radNum squarefree, radVar 0 or 1.
+function simplifyVarValue(coeff, radNum, xExp) {
+  if (coeff === 0) return { coeff: 0, varOut: 0, radNum: 1, radVar: 0 };
+  var e = extractSquare(radNum);
+  return {
+    coeff: coeff * e.coeff,
+    varOut: Math.floor(xExp / 2),
+    radNum: e.radicand,
+    radVar: xExp % 2
+  };
+}
+
+function randInt(min, max) { // inclusive
+  return min + Math.floor(Math.random() * (max - min + 1));
+}
+function pickFrom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+var SMALL_SF = [2, 3, 5, 6, 7, 10, 11, 13, 14, 15];
+var NONSQUARES_TO_20 = [2, 3, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20];
+
+// ---- Plain-text formatting (Unicode) ----
+
+var SUPERSCRIPTS = { "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹" };
+function supText(n) {
+  return String(n).split("").map(function (ch) { return SUPERSCRIPTS[ch]; }).join("");
+}
+
+// coeff * sqrt(radicand), e.g. "9√3", "√5", "4", "-2√7"
+function fmtRad(coeff, radicand) {
+  if (coeff === 0) return "0";
+  if (radicand === 1) return String(coeff);
+  var sign = coeff < 0 ? "-" : "";
+  var mag = Math.abs(coeff);
+  return sign + (mag === 1 ? "" : String(mag)) + "√" + radicand;
+}
+
+// Canonical variable value {coeff, varOut, radNum, radVar}, e.g. "17√(2x)", "4x", "3x√10", "-6x√2"
+function fmtVarRad(v) {
+  if (v.coeff === 0) return "0";
+  var sign = v.coeff < 0 ? "-" : "";
+  var mag = Math.abs(v.coeff);
+  var out = "";
+  if (v.varOut === 1) out = "x";
+  else if (v.varOut > 1) out = "x" + supText(v.varOut);
+  var hasRad = !(v.radNum === 1 && v.radVar === 0);
+  var rad = "";
+  if (hasRad) {
+    if (v.radVar === 0) {
+      rad = "√" + v.radNum;
+    } else {
+      var inside = (v.radNum === 1 ? "" : String(v.radNum)) + "x" + (v.radVar > 1 ? supText(v.radVar) : "");
+      rad = "√(" + inside + ")";
+    }
+  }
+  var coeffTxt = (mag === 1 && (out !== "" || hasRad)) ? "" : String(mag);
+  return sign + coeffTxt + out + rad;
+}
+
+// Join signed term texts: first as-is, later ones with " + " / " - " separators.
+// Each text must already carry its own leading "-" when negative.
+function joinSigned(texts) {
+  var out = "";
+  texts.forEach(function (t, i) {
+    if (i === 0) out = t;
+    else if (t.charAt(0) === "-") out += " - " + t.slice(1);
+    else out += " + " + t;
+  });
+  return out;
+}
+
+// ---- Builders: params -> full problem object ----
+
+function buildAddSubNum(terms) {
+  // terms: [{coef (>0), radicand, sign (+1/-1)}]; all radicands share one squarefree part.
+  var simp = terms.map(function (t) {
+    var s = simplifyValue(t.coef, t.radicand);
+    return { signedCoeff: t.sign * s.coeff, radicand: s.radicand };
+  });
+  var base = simp[0].radicand;
+  var total = simp.reduce(function (acc, s) { return acc + s.signedCoeff; }, 0);
+  var key = { coeff: total, radicand: base };
+  var fields1 = terms.map(function (t, i) {
+    return { key: "t" + i, label: "Term " + (i + 1) + " coefficient" };
+  });
+  var values1 = {};
+  simp.forEach(function (s, i) { values1["t" + i] = s.signedCoeff; });
+  var stmtTexts = terms.map(function (t) {
+    return (t.sign < 0 ? "-" : "") + fmtRad(t.coef, t.radicand);
+  });
+  var simpTexts = simp.map(function (s) { return fmtRad(s.signedCoeff, s.radicand); });
+  var prob = {
+    shape: "addSubNum", mode: "addsubnum",
+    params: { terms: terms },
+    key: key,
+    steps: [
+      {
+        title: "Simplify each term",
+        prompt: "Simplify each term. Enter the coefficient of each simplified term, keeping its sign. Every term simplifies to a multiple of √" + base + ".",
+        fields: fields1, values: values1
+      },
+      {
+        title: "Combine the like radicals",
+        prompt: "The radical parts are now the same, so add the coefficients. Enter the final coefficient and the radicand.",
+        fields: [
+          { key: "coeff", label: "coefficient" },
+          { key: "radicand", label: "radicand" }
+        ],
+        values: { coeff: total, radicand: base }
+      }
+    ],
+    solutionLines: [
+      joinSigned(stmtTexts),
+      "Simplify each term: " + terms.map(function (t, i) {
+        return fmtRad(t.coef, t.radicand) + " = " + fmtRad(simp[i].signedCoeff, simp[i].radicand);
+      }).join(",  "),
+      "= " + joinSigned(simpTexts),
+      "= " + fmtRad(total, base)
+    ]
+  };
+  prob.idString = "addSubNum|" + JSON.stringify(prob.params);
+  return prob;
+}
+
+function buildAddSubVar(terms, xExp) {
+  // terms: [{coef (>0), innerNum, sign}]; radicand of term i is innerNum * x^xExp.
+  var simp = terms.map(function (t) {
+    var e = extractSquare(t.innerNum);
+    return { signedCoeff: t.sign * t.coef * e.coeff, radicand: e.radicand };
+  });
+  var base = simp[0].radicand;
+  var total = simp.reduce(function (acc, s) { return acc + s.signedCoeff; }, 0);
+  var key = { coeff: total, varOut: Math.floor(xExp / 2), radNum: base, radVar: xExp % 2 };
+  var unit = fmtVarRad({ coeff: 1, varOut: key.varOut, radNum: base, radVar: key.radVar });
+  var fields1 = terms.map(function (t, i) {
+    return { key: "t" + i, label: "Term " + (i + 1) + " coefficient" };
+  });
+  var values1 = {};
+  simp.forEach(function (s, i) { values1["t" + i] = s.signedCoeff; });
+  function termText(t) {
+    var inside = (t.innerNum === 1 ? "" : String(t.innerNum)) + "x" + (xExp > 1 ? supText(xExp) : "");
+    return (t.coef === 1 ? "" : String(t.coef)) + "√(" + inside + ")";
+  }
+  var stmtTexts = terms.map(function (t) { return (t.sign < 0 ? "-" : "") + termText(t); });
+  var simpTexts = simp.map(function (s) {
+    return fmtVarRad({ coeff: s.signedCoeff, varOut: key.varOut, radNum: base, radVar: key.radVar });
+  });
+  var prob = {
+    shape: "addSubVar", mode: "addsubvar",
+    params: { terms: terms, xExp: xExp },
+    key: key,
+    steps: [
+      {
+        title: "Extract each term",
+        prompt: "Take the perfect-square factors out of each radical. Enter each term's new coefficient, keeping its sign. Every term becomes a multiple of " + unit + ".",
+        fields: fields1, values: values1
+      },
+      {
+        title: "Combine the like radicals",
+        prompt: "Add the coefficients, then enter the full answer: the coefficient, the power of x outside the radical, the number inside the radical, and the power of x inside the radical.",
+        fields: [
+          { key: "coeff", label: "coefficient" },
+          { key: "varOut", label: "x power outside" },
+          { key: "radNum", label: "number inside √" },
+          { key: "radVar", label: "x power inside" }
+        ],
+        values: { coeff: key.coeff, varOut: key.varOut, radNum: key.radNum, radVar: key.radVar }
+      }
+    ],
+    solutionLines: [
+      joinSigned(stmtTexts),
+      "Extract each term: " + terms.map(function (t, i) { return termText(t) + " = " + simpTexts[i]; }).join(",  "),
+      "= " + joinSigned(simpTexts),
+      "= " + fmtVarRad(key)
+    ]
+  };
+  prob.idString = "addSubVar|" + JSON.stringify(prob.params);
+  return prob;
+}
+
+function buildMulSimple(c1, r1, c2, r2) {
+  var combCoeff = c1 * c2, combRad = r1 * r2;
+  var key = simplifyValue(combCoeff, combRad);
+  var prob = {
+    shape: "mulSimple", mode: "multiply",
+    params: { c1: c1, r1: r1, c2: c2, r2: r2 },
+    key: key,
+    steps: [
+      {
+        title: "Multiply coefficients and radicands",
+        prompt: "Multiply the two coefficients together and the two radicands together. Do not simplify yet.",
+        fields: [
+          { key: "coeff", label: "coefficient" },
+          { key: "radicand", label: "radicand" }
+        ],
+        values: { coeff: combCoeff, radicand: combRad }
+      },
+      {
+        title: "Simplify the product",
+        prompt: "Take the perfect-square factors out of the radicand. Enter the simplified coefficient and radicand.",
+        fields: [
+          { key: "coeff", label: "coefficient" },
+          { key: "radicand", label: "radicand" }
+        ],
+        values: { coeff: key.coeff, radicand: key.radicand }
+      }
+    ],
+    solutionLines: [
+      "(" + fmtRad(c1, r1) + ")(" + fmtRad(c2, r2) + ")",
+      "= " + fmtRad(combCoeff, combRad) + "   (coefficients multiplied, radicands multiplied)",
+      "= " + fmtRad(key.coeff, key.radicand)
+    ]
+  };
+  prob.idString = "mulSimple|" + JSON.stringify(prob.params);
+  return prob;
+}
+
+function buildMulDistNum(k, a, m, n, b) {
+  // k√a · (m + n√b); both products positive.
+  var t1 = simplifyValue(k * m, a);
+  var t2 = simplifyValue(k * n, a * b);
+  var key = { t1: t1, t2: t2 };
+  var factor = fmtRad(k, a);
+  var prob = {
+    shape: "mulDistNum", mode: "multiply",
+    params: { k: k, a: a, m: m, n: n, b: b },
+    key: key,
+    steps: [
+      {
+        title: "First product",
+        prompt: "Multiply " + factor + " by " + m + ", then simplify. Enter the coefficient and radicand.",
+        fields: [
+          { key: "coeff", label: "coefficient" },
+          { key: "radicand", label: "radicand" }
+        ],
+        values: { coeff: t1.coeff, radicand: t1.radicand }
+      },
+      {
+        title: "Second product",
+        prompt: "Multiply " + factor + " by " + fmtRad(n, b) + ", then simplify. Enter the coefficient and radicand.",
+        fields: [
+          { key: "coeff", label: "coefficient" },
+          { key: "radicand", label: "radicand" }
+        ],
+        values: { coeff: t2.coeff, radicand: t2.radicand }
+      }
+    ],
+    solutionLines: [
+      factor + " (" + m + " + " + fmtRad(n, b) + ")",
+      "First product: " + factor + " × " + m + " = " + fmtRad(t1.coeff, t1.radicand),
+      "Second product: " + factor + " × " + fmtRad(n, b) + " = " + fmtRad(k * n, a * b) + " = " + fmtRad(t2.coeff, t2.radicand),
+      "= " + fmtRad(t1.coeff, t1.radicand) + " + " + fmtRad(t2.coeff, t2.radicand)
+    ]
+  };
+  prob.idString = "mulDistNum|" + JSON.stringify(prob.params);
+  return prob;
+}
+
+function buildMulDistVar(a, m, n, b, sign) {
+  // a√(m x) · ( √(n x) + sign·b√x ); each product contains x^2 under the radical.
+  var t1 = simplifyVarValue(a, m * n, 2);
+  var t2 = simplifyVarValue(sign * a * b, m, 2);
+  var key = { t1: t1, t2: t2 };
+  var factor = fmtVarRad({ coeff: a, varOut: 0, radNum: m, radVar: 1 });
+  var fieldsV = [
+    { key: "coeff", label: "coefficient" },
+    { key: "varOut", label: "x power outside" },
+    { key: "radNum", label: "number inside √" }
+  ];
+  var prob = {
+    shape: "mulDistVar", mode: "multiply",
+    params: { a: a, m: m, n: n, b: b, sign: sign },
+    key: key,
+    steps: [
+      {
+        title: "First product",
+        prompt: "Multiply " + factor + " by " + fmtVarRad({ coeff: 1, varOut: 0, radNum: n, radVar: 1 }) + " and simplify. The two x factors multiply to x² under the radical, so one x comes out. Enter the coefficient, the power of x outside, and the number left inside.",
+        fields: fieldsV,
+        values: { coeff: t1.coeff, varOut: t1.varOut, radNum: t1.radNum }
+      },
+      {
+        title: "Second product",
+        prompt: "Multiply " + factor + " by " + fmtVarRad({ coeff: sign * b, varOut: 0, radNum: 1, radVar: 1 }) + " and simplify. Keep the sign from the question on the coefficient.",
+        fields: fieldsV,
+        values: { coeff: t2.coeff, varOut: t2.varOut, radNum: t2.radNum }
+      }
+    ],
+    solutionLines: [
+      factor + " (" + fmtVarRad({ coeff: 1, varOut: 0, radNum: n, radVar: 1 }) + " " + (sign < 0 ? "-" : "+") + " " + fmtVarRad({ coeff: b, varOut: 0, radNum: 1, radVar: 1 }) + ")",
+      "First product: " + factor + " × " + fmtVarRad({ coeff: 1, varOut: 0, radNum: n, radVar: 1 }) + " = " + fmtVarRad(t1),
+      "Second product: " + factor + " × " + fmtVarRad({ coeff: sign * b, varOut: 0, radNum: 1, radVar: 1 }) + " = " + fmtVarRad(t2),
+      "= " + joinSigned([fmtVarRad(t1), fmtVarRad(t2)])
+    ]
+  };
+  prob.idString = "mulDistVar|" + JSON.stringify(prob.params);
+  return prob;
+}
+
+function buildDivNum(num, den) {
+  var q = num / den; // exact by construction
+  var key = simplifyValue(1, q);
+  var prob = {
+    shape: "divNum", mode: "divide",
+    params: { num: num, den: den },
+    key: key,
+    steps: [
+      {
+        title: "Divide inside one radical",
+        prompt: "Divide the radicands: " + num + " ÷ " + den + ", and keep the result under one radical. Enter that radicand.",
+        fields: [{ key: "quotRad", label: "radicand" }],
+        values: { quotRad: q }
+      },
+      {
+        title: "Simplify",
+        prompt: "Take the perfect-square factors out of the radicand. Enter the simplified coefficient and radicand.",
+        fields: [
+          { key: "coeff", label: "coefficient" },
+          { key: "radicand", label: "radicand" }
+        ],
+        values: { coeff: key.coeff, radicand: key.radicand }
+      }
+    ],
+    solutionLines: [
+      "√" + num + " / √" + den,
+      "= √" + q + "   (radicands divided)",
+      "= " + fmtRad(key.coeff, key.radicand)
+    ]
+  };
+  prob.idString = "divNum|" + JSON.stringify(prob.params);
+  return prob;
+}
+
+function buildDivVar(numCoef, numExp, denCoef, denExp) {
+  var qNum = numCoef / denCoef, qExp = numExp - denExp; // exact by construction
+  var key = simplifyVarValue(1, qNum, qExp);
+  var prob = {
+    shape: "divVar", mode: "divide",
+    params: { numCoef: numCoef, numExp: numExp, denCoef: denCoef, denExp: denExp },
+    key: key,
+    steps: [
+      {
+        title: "Divide inside one radical",
+        prompt: "Divide inside one radical: divide the numbers and subtract the powers of x. Enter the number and the power of x now inside the radical.",
+        fields: [
+          { key: "quotNum", label: "number inside" },
+          { key: "quotExp", label: "x power inside" }
+        ],
+        values: { quotNum: qNum, quotExp: qExp }
+      },
+      {
+        title: "Simplify",
+        prompt: "Take perfect-square factors — and pairs of x — out of the radical. Enter the coefficient, the power of x outside, the number inside, and the power of x inside.",
+        fields: [
+          { key: "coeff", label: "coefficient" },
+          { key: "varOut", label: "x power outside" },
+          { key: "radNum", label: "number inside √" },
+          { key: "radVar", label: "x power inside" }
+        ],
+        values: { coeff: key.coeff, varOut: key.varOut, radNum: key.radNum, radVar: key.radVar }
+      }
+    ],
+    solutionLines: [
+      "√(" + numCoef + "x" + supText(numExp) + ") / √(" + denCoef + "x" + supText(denExp) + ")",
+      "= √(" + qNum + "x" + supText(qExp) + ")   (numbers divided, x powers subtracted)",
+      "= " + fmtVarRad(key)
+    ]
+  };
+  prob.idString = "divVar|" + JSON.stringify(prob.params);
+  return prob;
+}
+
+function buildRatMono(n, c, d) {
+  // n / (c√d), d squarefree.
+  var g = gcd(n, c * d);
+  var key = { numCoeff: n / g, radicand: d, den: (c * d) / g };
+  var denomText = (c === 1 ? "" : String(c)) + "√" + d;
+  var fieldsR = [
+    { key: "numCoeff", label: "numerator coefficient" },
+    { key: "radicand", label: "radicand" },
+    { key: "den", label: "denominator" }
+  ];
+  var prob = {
+    shape: "ratMono", mode: "rationalize",
+    params: { n: n, c: c, d: d },
+    key: key,
+    steps: [
+      {
+        title: "Multiply top and bottom by √" + d,
+        prompt: "Multiply the numerator and the denominator by √" + d + ". Enter the new numerator as a coefficient times √" + d + ", and the new denominator.",
+        fields: fieldsR,
+        values: { numCoeff: n, radicand: d, den: c * d }
+      },
+      {
+        title: "Reduce the fraction",
+        prompt: "Divide the numerator coefficient and the denominator by their greatest common factor. The radicand does not change.",
+        fields: fieldsR,
+        values: { numCoeff: key.numCoeff, radicand: d, den: key.den }
+      }
+    ],
+    solutionLines: [
+      n + " / (" + denomText + ")",
+      "= " + fmtRad(n, d) + " / " + (c * d) + "   (top and bottom multiplied by √" + d + ")",
+      "= " + (key.den === 1 ? fmtRad(key.numCoeff, d) : fmtRad(key.numCoeff, d) + " / " + key.den)
+    ]
+  };
+  prob.idString = "ratMono|" + JSON.stringify(prob.params);
+  return prob;
+}
+
+function buildRatTwo(a, p, b, q, d) {
+  // (a√p + b√q) / √d, d squarefree, products pd and qd not perfect squares.
+  var e1 = extractSquare(p * d), e2 = extractSquare(q * d);
+  var c1 = a * e1.coeff, c2 = b * e2.coeff;
+  var g = gcd3(c1, c2, d);
+  var key = { c1: c1 / g, r1: e1.radicand, c2: c2 / g, r2: e2.radicand, den: d / g };
+  var prob = {
+    shape: "ratTwo", mode: "rationalize",
+    params: { a: a, p: p, b: b, q: q, d: d },
+    key: key,
+    steps: [
+      {
+        title: "First term, times √" + d,
+        prompt: "Multiply the first numerator term, " + fmtRad(a, p) + ", by √" + d + " and simplify the result. Enter its coefficient and radicand.",
+        fields: [
+          { key: "coeff", label: "coefficient" },
+          { key: "radicand", label: "radicand" }
+        ],
+        values: { coeff: c1, radicand: e1.radicand }
+      },
+      {
+        title: "Second term, times √" + d,
+        prompt: "Multiply the second numerator term, " + fmtRad(b, q) + ", by √" + d + " and simplify the result. Enter its coefficient and radicand.",
+        fields: [
+          { key: "coeff", label: "coefficient" },
+          { key: "radicand", label: "radicand" }
+        ],
+        values: { coeff: c2, radicand: e2.radicand }
+      },
+      {
+        title: "Reduce the fraction",
+        prompt: "The denominator is now " + d + ". Divide both numerator coefficients and the denominator by their greatest common factor. The radicands do not change.",
+        fields: [
+          { key: "c1", label: "first coefficient" },
+          { key: "c2", label: "second coefficient" },
+          { key: "den", label: "denominator" }
+        ],
+        values: { c1: key.c1, c2: key.c2, den: key.den }
+      }
+    ],
+    solutionLines: [
+      "(" + fmtRad(a, p) + " + " + fmtRad(b, q) + ") / √" + d,
+      "= (" + fmtRad(c1, e1.radicand) + " + " + fmtRad(c2, e2.radicand) + ") / " + d + "   (top and bottom multiplied by √" + d + ", products simplified)",
+      "= " + (key.den === 1
+        ? fmtRad(key.c1, key.r1) + " + " + fmtRad(key.c2, key.r2)
+        : "(" + fmtRad(key.c1, key.r1) + " + " + fmtRad(key.c2, key.r2) + ") / " + key.den)
+    ]
+  };
+  prob.idString = "ratTwo|" + JSON.stringify(prob.params);
+  return prob;
+}
+
+// ---- Generators (random parameters within each shape) ----
+
+function genAddSubNum() {
+  for (var tries = 0; tries < 5000; tries++) {
+    var r = pickFrom(SMALL_SF);
+    var nTerms = pickFrom([2, 3, 3]);
+    var terms = [], total = 0, anySimplify = false;
+    for (var i = 0; i < nTerms; i++) {
+      var s = randInt(1, 4);
+      var c = randInt(1, 6);
+      var sign = i === 0 ? 1 : (Math.random() < 0.5 ? -1 : 1);
+      if (s >= 2) anySimplify = true;
+      terms.push({ coef: c, radicand: r * s * s, sign: sign });
+      total += sign * c * s;
+    }
+    if (!anySimplify || total === 0) continue;
+    return buildAddSubNum(terms);
+  }
+  throw new Error("addSubNum generation failed");
+}
+
+function genAddSubVar() {
+  for (var tries = 0; tries < 5000; tries++) {
+    var r = pickFrom([2, 3, 5, 6, 7, 10, 11, 13]);
+    var xExp = pickFrom([1, 2, 3]);
+    var nTerms = pickFrom([2, 3, 3]);
+    var terms = [], total = 0, anySimplify = false;
+    for (var i = 0; i < nTerms; i++) {
+      var s = randInt(1, 3);
+      var c = randInt(1, 5);
+      var sign = i === 0 ? 1 : (Math.random() < 0.5 ? -1 : 1);
+      if (s >= 2) anySimplify = true;
+      terms.push({ coef: c, innerNum: r * s * s, sign: sign });
+      total += sign * c * s;
+    }
+    if (!anySimplify || total === 0) continue;
+    return buildAddSubVar(terms, xExp);
+  }
+  throw new Error("addSubVar generation failed");
+}
+
+function genMulSimple() {
+  for (var tries = 0; tries < 5000; tries++) {
+    var c1 = randInt(1, 5), c2 = randInt(1, 5);
+    var r1 = randInt(2, 30), r2 = randInt(2, 30);
+    if (extractSquare(r1 * r2).coeff < 2) continue; // product radicand must simplify
+    return buildMulSimple(c1, r1, c2, r2);
+  }
+  throw new Error("mulSimple generation failed");
+}
+
+function genMulDistNum() {
+  for (var tries = 0; tries < 5000; tries++) {
+    var k = randInt(1, 4);
+    var a = pickFrom(SMALL_SF);
+    var m = randInt(1, 9);
+    var n = randInt(1, 4);
+    var b = pickFrom(SMALL_SF);
+    var t2 = simplifyValue(k * n, a * b);
+    if (t2.radicand === a) continue; // would combine with the first product
+    return buildMulDistNum(k, a, m, n, b);
+  }
+  throw new Error("mulDistNum generation failed");
+}
+
+function genMulDistVar() {
+  for (var tries = 0; tries < 5000; tries++) {
+    var a = randInt(1, 4);
+    var m = randInt(2, 20);
+    var n = pickFrom(NONSQUARES_TO_20);
+    var b = randInt(1, 4);
+    var sign = Math.random() < 0.5 ? -1 : 1;
+    var prob = buildMulDistVar(a, m, n, b, sign);
+    if (prob.key.t1.radNum === prob.key.t2.radNum) continue; // like terms would combine
+    if (prob.key.t1.radNum === 1 && prob.key.t2.radNum === 1) continue; // keep a radical in the answer
+    return prob;
+  }
+  throw new Error("mulDistVar generation failed");
+}
+
+function genDivNum() {
+  var s = randInt(1, 6);
+  var r = pickFrom([1].concat(SMALL_SF));
+  var q = s * s * r;
+  var d = randInt(2, 30);
+  return buildDivNum(d * q, d);
+}
+
+function genDivVar() {
+  var s = randInt(1, 5);
+  var rn = pickFrom(SMALL_SF);
+  var e = pickFrom([1, 2, 3, 4]);
+  var f = pickFrom([0, 1]);
+  var dnum = randInt(2, 20);
+  var qNum = s * s * rn;
+  return buildDivVar(dnum * qNum, f + e, dnum, f);
+}
+
+function genRatMono() {
+  for (var tries = 0; tries < 5000; tries++) {
+    var n = randInt(1, 12);
+    var c = pickFrom([1, 1, 1, 2, 3]);
+    var d = pickFrom([2, 3, 5, 6, 7, 10, 11, 13, 14, 15, 17, 19]);
+    if (gcd(n, c * d) < 2) continue; // the reduction step must do something
+    return buildRatMono(n, c, d);
+  }
+  throw new Error("ratMono generation failed");
+}
+
+function genRatTwo() {
+  for (var tries = 0; tries < 5000; tries++) {
+    var a = randInt(1, 4), b = randInt(1, 4);
+    var p = pickFrom(SMALL_SF), q = pickFrom(SMALL_SF);
+    var d = pickFrom(SMALL_SF);
+    var e1 = extractSquare(p * d), e2 = extractSquare(q * d);
+    if (e1.radicand === 1 || e2.radicand === 1) continue; // products must stay radical
+    if (e1.radicand === e2.radicand) continue; // terms must stay unlike
+    if (e1.coeff < 2 && e2.coeff < 2) continue; // at least one product must simplify
+    return buildRatTwo(a, p, b, q, d);
+  }
+  throw new Error("ratTwo generation failed");
+}
+
+var GENERATORS = {
+  addSubNum: genAddSubNum,
+  addSubVar: genAddSubVar,
+  mulSimple: genMulSimple,
+  mulDistNum: genMulDistNum,
+  mulDistVar: genMulDistVar,
+  divNum: genDivNum,
+  divVar: genDivVar,
+  ratMono: genRatMono,
+  ratTwo: genRatTwo
+};
+
+function generateShape(shape) {
+  if (!GENERATORS[shape]) throw new Error("Unknown shape: " + shape);
+  return GENERATORS[shape]();
+}
+
+// ---- Worked examples and faded items (the spec's sample items) ----
+
+var WORKED = {
+  addsubnum: [buildAddSubNum([
+    { coef: 4, radicand: 27, sign: 1 },
+    { coef: 2, radicand: 12, sign: -1 },
+    { coef: 1, radicand: 3, sign: 1 }
+  ])],
+  addsubvar: [buildAddSubVar([
+    { coef: 2, innerNum: 50, sign: 1 },
+    { coef: 1, innerNum: 8, sign: -1 },
+    { coef: 3, innerNum: 18, sign: 1 }
+  ], 1)],
+  multiply: [buildMulDistVar(3, 2, 5, 2, -1)],
+  divide: [buildDivVar(96, 3, 6, 1)],
+  rationalize: [buildRatMono(7, 1, 6), buildRatTwo(2, 3, 1, 2, 6)]
+};
+
+var FADED = {
+  addsubnum: buildAddSubNum([
+    { coef: 3, radicand: 20, sign: 1 },
+    { coef: 2, radicand: 45, sign: 1 },
+    { coef: 1, radicand: 5, sign: -1 }
+  ]),
+  addsubvar: buildAddSubVar([
+    { coef: 4, innerNum: 12, sign: 1 },
+    { coef: 1, innerNum: 27, sign: -1 },
+    { coef: 2, innerNum: 3, sign: 1 }
+  ], 1),
+  multiply: buildMulDistVar(2, 3, 6, 3, 1),
+  divide: buildDivVar(75, 5, 3, 1),
+  rationalize: buildRatTwo(2, 3, 4, 2, 6)
+};
+
+var MODES = {
+  addsubnum: { label: "Add / Subtract — numbers", shapes: ["addSubNum"] },
+  addsubvar: { label: "Add / Subtract — variables", shapes: ["addSubVar"] },
+  multiply: { label: "Multiply (including distribution)", shapes: ["mulSimple", "mulDistNum", "mulDistVar"] },
+  divide: { label: "Divide", shapes: ["divNum", "divVar"] },
+  rationalize: { label: "Rationalize the denominator", shapes: ["ratMono", "ratTwo"] }
+};
+var MODE_ORDER = ["addsubnum", "addsubvar", "multiply", "divide", "rationalize"];
+var VARIABLE_SHAPES = { addSubVar: true, mulDistVar: true, divVar: true };
+
+function getWorkedExamples(mode) { return WORKED[mode]; }
+function getFadedItem(mode) { return FADED[mode]; }
+function generateForMode(mode, shapeIndex) {
+  var shapes = MODES[mode].shapes;
+  return generateShape(shapes[shapeIndex % shapes.length]);
+}
+// ==END GENERATOR==
+</script>
+
+<script>
+"use strict";
+// ---- UI ----
+
+var modeSelect = document.getElementById("modeSelect");
+var newSetBtn = document.getElementById("newSetBtn");
+var scoreLine = document.getElementById("scoreLine");
+var workedCard = document.getElementById("workedCard");
+var workedTitle = document.getElementById("workedTitle");
+var workedNote = document.getElementById("workedNote");
+var workedBody = document.getElementById("workedBody");
+var workedContinueBtn = document.getElementById("workedContinueBtn");
+var problemCard = document.getElementById("problemCard");
+var kindTag = document.getElementById("kindTag");
+var equationDisplay = document.getElementById("equationDisplay");
+var equationHint = document.getElementById("equationHint");
+var stepsContainer = document.getElementById("stepsContainer");
+var solutionPanel = document.getElementById("solutionPanel");
+var solutionLines = document.getElementById("solutionLines");
+var showSolutionBtn = document.getElementById("showSolutionBtn");
+var reviewBtn = document.getElementById("reviewBtn");
+var nextBtn = document.getElementById("nextBtn");
+var doneCard = document.getElementById("doneCard");
+var doneText = document.getElementById("doneText");
+var againBtn = document.getElementById("againBtn");
+
+var SESSION_TARGET = 10;
+var sessionDone = 0;       // items completed this session
+var sessionHelp = 0;       // of those, how many used help
+var stages = {};           // mode -> 0 worked pending, 1 faded pending, 2 generated
+var shapeIdx = {};         // mode -> rotation index for generated shapes
+var rotationIdx = 0;       // mixed-mode rotation over MODE_ORDER
+var currentMode = null;    // mode of the item on screen
+var currentItem = null;    // {prob, stepState, helpUsed, counted}
+var workedContext = null;  // {mode, review:bool}
+
+function escapeHTML(s) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+function radHTML(content) {
+  return "√<span class=\"rad\">" + content + "</span>";
+}
+function radTermHTML(coef, radicand) {
+  return (coef === 1 ? "" : String(coef)) + radHTML(String(radicand));
+}
+function supHTML(e) {
+  return e > 1 ? "<sup>" + e + "</sup>" : "";
+}
+function varRadicandHTML(num, xExp) {
+  var numTxt = num === 1 ? "" : String(num);
+  var xTxt = xExp === 0 ? "" : "x" + supHTML(xExp);
+  if (numTxt === "" && xTxt === "") return "1";
+  return numTxt + xTxt;
+}
+function varTermHTML(coef, num, xExp) {
+  return (coef === 1 ? "" : String(coef)) + radHTML(varRadicandHTML(num, xExp));
+}
+function fracHTML(top, bot) {
+  return "<span class=\"frac\"><span class=\"num\">" + top + "</span><span class=\"den\">" + bot + "</span></span>";
+}
+
+function statementHTML(prob) {
+  var p = prob.params;
+  switch (prob.shape) {
+    case "addSubNum":
+      return p.terms.map(function (t, i) {
+        var txt = radTermHTML(t.coef, t.radicand);
+        if (i === 0) return (t.sign < 0 ? "−" : "") + txt;
+        return (t.sign < 0 ? " − " : " + ") + txt;
+      }).join("");
+    case "addSubVar":
+      return p.terms.map(function (t, i) {
+        var txt = varTermHTML(t.coef, t.innerNum, p.xExp);
+        if (i === 0) return (t.sign < 0 ? "−" : "") + txt;
+        return (t.sign < 0 ? " − " : " + ") + txt;
+      }).join("");
+    case "mulSimple":
+      return "(" + radTermHTML(p.c1, p.r1) + ")(" + radTermHTML(p.c2, p.r2) + ")";
+    case "mulDistNum":
+      return radTermHTML(p.k, p.a) + " ( " + p.m + " + " + radTermHTML(p.n, p.b) + " )";
+    case "mulDistVar":
+      return varTermHTML(p.a, p.m, 1) + " ( " + varTermHTML(1, p.n, 1) +
+        (p.sign < 0 ? " − " : " + ") + varTermHTML(p.b, 1, 1) + " )";
+    case "divNum":
+      return fracHTML(radHTML(String(p.num)), radHTML(String(p.den)));
+    case "divVar":
+      return fracHTML(radHTML(varRadicandHTML(p.numCoef, p.numExp)),
+                      radHTML(varRadicandHTML(p.denCoef, p.denExp)));
+    case "ratMono":
+      return fracHTML(String(p.n), (p.c === 1 ? "" : String(p.c)) + radHTML(String(p.d)));
+    case "ratTwo":
+      return fracHTML(radTermHTML(p.a, p.p) + " + " + radTermHTML(p.b, p.q), radHTML(String(p.d)));
+  }
+  return "";
+}
+
+function updateScore() {
+  scoreLine.innerHTML = "Session: <strong>" + sessionDone + "</strong> / " + SESSION_TARGET +
+    " completed · help used on <strong>" + sessionHelp + "</strong>";
+}
+
+function parseIntField(el) {
+  var v = el.value.trim();
+  if (!/^[+-]?\d+$/.test(v)) return null;
+  return parseInt(v, 10);
+}
+
+function makeField(id, label) {
+  var wrap = document.createElement("div");
+  wrap.className = "field";
+  var lab = document.createElement("label");
+  lab.setAttribute("for", id);
+  lab.textContent = label;
+  var input = document.createElement("input");
+  input.type = "text";
+  input.inputMode = "numeric";
+  input.autocomplete = "off";
+  input.id = id;
+  wrap.appendChild(lab);
+  wrap.appendChild(input);
+  return { wrap: wrap, input: input };
+}
+
+// Builds one checked step card. opts.prefill: fill with the step's values and
+// mark done immediately (faded items). opts.onDone: called when the step completes.
+function buildStep(item, stepIdx, stepDef, opts) {
+  var card = document.createElement("section");
+  card.className = "step";
+  var h = document.createElement("h3");
+  h.textContent = "Step " + (stepIdx + 1) + " — " + stepDef.title;
+  card.appendChild(h);
+  var prompt = document.createElement("p");
+  prompt.className = "prompt";
+  prompt.textContent = stepDef.prompt;
+  card.appendChild(prompt);
+  var fieldsDiv = document.createElement("div");
+  fieldsDiv.className = "fields";
+  var inputs = [];
+  stepDef.fields.forEach(function (f) {
+    var made = makeField("in-" + stepIdx + "-" + f.key, f.label);
+    fieldsDiv.appendChild(made.wrap);
+    inputs.push({ key: f.key, input: made.input });
+  });
+  card.appendChild(fieldsDiv);
+  var btns = document.createElement("div");
+  btns.className = "stepbtns";
+  var checkBtn = document.createElement("button");
+  checkBtn.type = "button";
+  checkBtn.textContent = "Check";
+  var revealBtn = document.createElement("button");
+  revealBtn.type = "button";
+  revealBtn.className = "secondary";
+  revealBtn.textContent = "Show this step";
+  btns.appendChild(checkBtn);
+  btns.appendChild(revealBtn);
+  card.appendChild(btns);
+  var feedback = document.createElement("p");
+  feedback.className = "feedback";
+  feedback.setAttribute("aria-live", "polite");
+  card.appendChild(feedback);
+
+  function finishStep(wasReveal) {
+    if (item.stepState[stepIdx]) return;
+    item.stepState[stepIdx] = true;
+    card.classList.add("done");
+    inputs.forEach(function (it) { it.input.disabled = true; });
+    checkBtn.disabled = true;
+    revealBtn.disabled = true;
+    feedback.className = "feedback ok";
+    feedback.textContent = wasReveal ? "Step shown. Try the next one yourself." : "✓ Correct.";
+    maybeCompleteItem(item);
+  }
+  checkBtn.addEventListener("click", function () {
+    var okParse = true, ok = true;
+    inputs.forEach(function (it) {
+      var v = parseIntField(it.input);
+      if (v === null) okParse = false;
+      else if (v !== stepDef.values[it.key]) ok = false;
+    });
+    if (!okParse) {
+      feedback.className = "feedback bad";
+      feedback.textContent = "Enter a whole number in every box first.";
+      return;
+    }
+    if (ok) finishStep(false);
+    else {
+      feedback.className = "feedback bad";
+      feedback.textContent = "✗ Not yet — check your work and try again.";
+    }
+  });
+  revealBtn.addEventListener("click", function () {
+    item.helpUsed = true;
+    inputs.forEach(function (it) { it.input.value = String(stepDef.values[it.key]); });
+    finishStep(true);
+  });
+
+  if (opts && opts.prefill) {
+    inputs.forEach(function (it) { it.input.value = String(stepDef.values[it.key]); });
+    item.stepState[stepIdx] = true;
+    card.classList.add("done");
+    inputs.forEach(function (it) { it.input.disabled = true; });
+    checkBtn.disabled = true;
+    revealBtn.disabled = true;
+    feedback.className = "feedback ok";
+    feedback.textContent = "This step is done for you — the last step is yours.";
+  }
+  return card;
+}
+
+function maybeCompleteItem(item) {
+  var all = item.stepState.length > 0 && item.stepState.every(function (s) { return s; });
+  if (all && !item.counted) {
+    item.counted = true;
+    sessionDone++;
+    if (item.helpUsed) sessionHelp++;
+    if (stages[item.mode] === 1) stages[item.mode] = 2;
+    updateScore();
+    showSolution(item.prob);
+    if (sessionDone >= SESSION_TARGET) {
+      doneText.textContent = "You finished " + SESSION_TARGET + " problems" +
+        (sessionHelp > 0 ? ", using help on " + sessionHelp + " of them. Help is part of learning — try the next set with less of it." : " — with no help at all. Clean set.");
+      doneCard.classList.remove("hidden");
+      nextBtn.classList.add("hidden");
+    } else {
+      nextBtn.classList.remove("hidden");
+      nextBtn.focus();
+    }
+  }
+}
+
+function showSolution(prob) {
+  var target = prob || (currentItem && currentItem.prob);
+  if (!target) return;
+  solutionLines.innerHTML = "";
+  target.solutionLines.forEach(function (line) {
+    var d = document.createElement("div");
+    d.className = "line";
+    d.textContent = line;
+    solutionLines.appendChild(d);
+  });
+  solutionPanel.classList.remove("hidden");
+}
+
+function presentItem(prob, mode, faded) {
+  currentMode = mode;
+  var item = { prob: prob, mode: mode, stepState: [], helpUsed: false, counted: false };
+  prob.steps.forEach(function () { item.stepState.push(false); });
+  currentItem = item;
+  problemCard.classList.remove("hidden");
+  doneCard.classList.add("hidden");
+  solutionPanel.classList.add("hidden");
+  solutionLines.innerHTML = "";
+  nextBtn.classList.add("hidden");
+  showSolutionBtn.disabled = false;
+  kindTag.textContent = MODES[mode].label + (faded ? " · Faded example — finish the last step" : "");
+  equationDisplay.innerHTML = statementHTML(prob);
+  equationHint.textContent = VARIABLE_SHAPES[prob.shape]
+    ? "Assume x ≥ 0 (the course convention for variable radicands)."
+    : "Give every answer in simplified exact form.";
+  reviewBtn.classList.toggle("hidden", stages[mode] < 1);
+  stepsContainer.innerHTML = "";
+  prob.steps.forEach(function (stepDef, idx) {
+    var prefill = faded && idx < prob.steps.length - 1;
+    stepsContainer.appendChild(buildStep(item, idx, stepDef, { prefill: prefill }));
+  });
+  var firstInput = stepsContainer.querySelector("input:not([disabled])");
+  if (firstInput) firstInput.focus();
+}
+
+function showWorked(mode, review) {
+  workedContext = { mode: mode, review: !!review };
+  workedTitle.textContent = "Worked example — " + MODES[mode].label;
+  workedNote.textContent = VARIABLE_SHAPES[getWorkedExamples(mode)[0].shape]
+    ? "Assume x ≥ 0 (the course convention for variable radicands)."
+    : "Watch how each step works — then you will finish a faded one yourself.";
+  workedBody.innerHTML = "";
+  getWorkedExamples(mode).forEach(function (prob) {
+    var box = document.createElement("div");
+    box.className = "worked-example";
+    var stmt = document.createElement("div");
+    stmt.className = "stmt";
+    stmt.innerHTML = statementHTML(prob);
+    box.appendChild(stmt);
+    prob.solutionLines.slice(1).forEach(function (line) {
+      var d = document.createElement("div");
+      d.className = "line";
+      d.textContent = line;
+      box.appendChild(d);
+    });
+    workedBody.appendChild(box);
+  });
+  workedContinueBtn.textContent = review ? "Close" : "Got it — try the faded one";
+  workedCard.classList.remove("hidden");
+  if (!review) problemCard.classList.add("hidden");
+  workedContinueBtn.focus();
+}
+
+function presentNext() {
+  workedCard.classList.add("hidden");
+  var mode;
+  if (modeSelect.value === "mixed") mode = MODE_ORDER[rotationIdx % MODE_ORDER.length];
+  else mode = modeSelect.value;
+  currentMode = mode;
+  if (stages[mode] === undefined) stages[mode] = 0;
+  if (stages[mode] === 0) {
+    showWorked(mode, false);
+    return;
+  }
+  if (stages[mode] === 1) {
+    presentItem(getFadedItem(mode), mode, true);
+    return;
+  }
+  var idx = shapeIdx[mode] || 0;
+  shapeIdx[mode] = idx + 1;
+  presentItem(generateForMode(mode, idx), mode, false);
+}
+
+function startSession() {
+  sessionDone = 0;
+  sessionHelp = 0;
+  stages = {};
+  shapeIdx = {};
+  rotationIdx = 0;
+  currentItem = null;
+  doneCard.classList.add("hidden");
+  updateScore();
+  presentNext();
+}
+
+workedContinueBtn.addEventListener("click", function () {
+  if (!workedContext) return;
+  var mode = workedContext.mode;
+  var wasReview = workedContext.review;
+  workedContext = null;
+  workedCard.classList.add("hidden");
+  if (wasReview) {
+    problemCard.classList.remove("hidden");
+    return;
+  }
+  if (stages[mode] === 0) stages[mode] = 1;
+  presentItem(getFadedItem(mode), mode, true);
+});
+
+reviewBtn.addEventListener("click", function () {
+  if (currentMode) showWorked(currentMode, true);
+});
+
+showSolutionBtn.addEventListener("click", function () {
+  if (!currentItem || currentItem.counted) return;
+  currentItem.helpUsed = true;
+  // Reveal every remaining step through the step cards' own buttons.
+  var buttons = stepsContainer.querySelectorAll(".step:not(.done) .stepbtns .secondary");
+  buttons.forEach(function (b) { b.click(); });
+  showSolution(currentItem.prob);
+});
+
+nextBtn.addEventListener("click", function () {
+  if (modeSelect.value === "mixed") rotationIdx++;
+  presentNext();
+});
+
+newSetBtn.addEventListener("click", startSession);
+againBtn.addEventListener("click", startSession);
+modeSelect.addEventListener("change", startSession);
+
+startSession();
+</script>
+</body>
+</html>
